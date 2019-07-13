@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-system",
+  "version": "1.0.0",
+  "description": "Большая домашняя работа курса по Node.js - Корпоративная система _\"LoftSystem\"_.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/app.js"
+  },
+  "author": "Klimenko Ivan",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/joi": "^15.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-form": "^0.2.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.3",
+    "multer": "^1.4.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
