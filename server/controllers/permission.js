@@ -3,18 +3,20 @@ const User = require("../db/models/user");
 exports.update = data =>
   new Promise(async (resolve, reject) => {
     try {
-      console.log(data.data);
       const { permissionId, permission } = data.data;
+
+      const oldUserData = await User.findOne({ permissionId });
+      const oldPermission = oldUserData.permission;
+      const newPermission = Object.assign(oldPermission, permission);
+
       const user = await User.findOneAndUpdate(
         { permissionId },
-        {
-          permission
-        }
+        { permission: newPermission }
       );
 
-      user.save();
+      let result = await user.save();
 
-      resolve(user);
+      resolve(result);
     } catch (err) {
       reject({
         message: err,

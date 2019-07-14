@@ -36,7 +36,6 @@ exports.login = (data, res) =>
         });
       }
 
-      // TODO: localStrategy passport.js ( ? )
       if (result.validPassword(password)) {
         resolve(result);
       } else {
@@ -64,9 +63,9 @@ exports.authFromToken = data =>
           statusCode: 500
         })
       );
-      const user = await User.find({ access_token });
+      const user = await User.findOne({ access_token });
 
-      resolve(user[0]);
+      resolve(user);
     } catch (err) {
       reject({
         message: err,

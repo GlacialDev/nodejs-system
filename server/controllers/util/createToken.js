@@ -7,6 +7,6 @@ module.exports = function(userId) {
     expiresIn: `${timeAccessTokenExpires}s`
   });
 
-  console.log("token were created");
+  // console.log("token were created");
   return access_token;
 };

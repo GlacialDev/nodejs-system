@@ -56,6 +56,7 @@ module.exports = function(router) {
         ...req.files
       });
 
+      console.log(result);
       res.json(result);
     } catch (err) {
       errorHandler(err, res);

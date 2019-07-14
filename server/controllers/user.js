@@ -1,6 +1,7 @@
 const User = require("../db/models/user");
 const uuidv4 = require("uuid/v4");
 const Joi = require("@hapi/joi");
+const Jimp = require("jimp");
 
 const fs = require("fs");
 const util = require("util");
@@ -38,19 +39,19 @@ const newUserSchema = Joi.object().keys({
       D: Joi.boolean()
     })
   }),
-  surName: Joi.string().alphanum(),
-  firstName: Joi.string().alphanum(),
-  middleName: Joi.string().alphanum(),
+  surName: Joi.string(),
+  firstName: Joi.string(),
+  middleName: Joi.string(),
   password: Joi.string()
     .regex(/^[a-zA-Z0-9]{3,30}$/)
     .required()
 });
 
 const updateUserSchema = Joi.object().keys({
-  surName: Joi.string().alphanum(),
+  surName: Joi.string(),
   image: Joi.string().alphanum(),
-  firstName: Joi.string().alphanum(),
-  middleName: Joi.string().alphanum(),
+  firstName: Joi.string(),
+  middleName: Joi.string(),
   oldPassword: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/)
 });
@@ -140,26 +141,28 @@ exports.updateUser = data =>
       }
 
       let oldUserData = await User.findOne({ id });
-      if (oldUserData.validPassword(oldPassword)) {
-        let user = await User.findOneAndUpdate(
-          { id },
-          {
-            firstName,
-            middleName,
-            surName
-          }
-        );
-        user.setPassword(password);
 
-        const result = await user.save();
+      let dataToChange = {};
+      if (firstName) dataToChange.firstName = firstName;
+      if (middleName) dataToChange.middleName = middleName;
+      if (surName) dataToChange.surName = surName;
 
-        resolve(result);
-      } else {
-        reject({
-          message: "Invalid password",
-          statusCode: 500
-        });
+      let user = await User.findOneAndUpdate({ id }, dataToChange);
+
+      if (password) {
+        if (oldUserData.validPassword(oldPassword)) {
+          user.setPassword(password);
+        } else {
+          reject({
+            message: "Invalid password",
+            statusCode: 500
+          });
+        }
       }
+
+      const result = await user.save();
+
+      resolve(result);
     } catch (err) {
       reject({
         message: err,
@@ -178,13 +181,8 @@ exports.updateUserImage = data =>
       size: imageSize
     } = image;
 
-    // console.log(id);
-    // console.log(imageName);
-    // console.log(imageTempPath);
-    // console.log(imageSize);
     try {
       const uploadDir = path.join(process.cwd(), "/dist", "images", "avatars");
-      console.log(process.cwd());
 
       try {
         await access(uploadDir, fs.constants.F_OK);
@@ -204,17 +202,35 @@ exports.updateUserImage = data =>
 
       let ext = path.extname(imageName);
       let imageFullName = `${id}${ext}`;
-      await rename(imageTempPath, path.join(uploadDir, imageFullName));
+      let imagePath = path.join(uploadDir, imageFullName);
+      await rename(imageTempPath, imagePath);
+
+      Jimp.read(imagePath)
+        .then(image => {
+          let height = image.bitmap.height;
+          let width = image.bitmap.width;
+          let cropSize = width < height ? width : height;
+          return image
+            .crop(0, 0, cropSize, cropSize)
+            .resize(250, 250)
+            .quality(80)
+            .write(imagePath); // save
+        })
+        .catch(err => {
+          console.error(err);
+        });
 
       let user = await User.findOneAndUpdate(
         { id },
         {
-          image: `./images/avatars/${imageFullName}`
+          image: path.normalize(`./images/avatars/${imageFullName}`)
         }
       );
 
+      let result = user.save();
+
       resolve({
-        path: path.join(uploadDir, imageFullName)
+        path: path.normalize(`./images/avatars/${imageFullName}`)
       });
     } catch (err) {
       reject(err);
