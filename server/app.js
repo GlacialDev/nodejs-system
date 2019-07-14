@@ -21,8 +21,8 @@ const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io").listen(server);
 
-server.listen(3000, () => {
-  console.log("Server running on localhost:3000");
+server.listen(80, () => {
+  console.log("Server running on localhost:80");
 });
 
 const clients = {};
