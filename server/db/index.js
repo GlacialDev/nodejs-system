@@ -27,7 +27,8 @@ switch (process.env.NODE_ENV) {
     break;
 }
 
-const connectionURL = `mongodb://${DB_USER}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+//for prod || "mongodb+srv://Glacialix:<password>@glacialix-lblnh.mongodb.net/test?retryWrites=true&w=majority"
+const connectionURL = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", false);
 
