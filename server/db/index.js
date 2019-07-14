@@ -27,8 +27,13 @@ switch (process.env.NODE_ENV) {
     break;
 }
 
-//for prod || "mongodb+srv://Glacialix:<password>@glacialix-lblnh.mongodb.net/test?retryWrites=true&w=majority"
-const connectionURL = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+let connectionURL;
+if (process.env.NODE_ENV === "production") {
+  //for prod || "mongodb+srv://Glacialix:<password>@glacialix-lblnh.mongodb.net/test?retryWrites=true&w=majority"
+  connectionURL = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+} else {
+  connectionURL = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+}
 mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", false);
 
