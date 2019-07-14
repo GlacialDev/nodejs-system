@@ -19,22 +19,58 @@ const schema = new mongoose.Schema(
     },
     permission: {
       chat: {
-        C: Boolean,
-        R: Boolean,
-        U: Boolean,
-        D: Boolean
+        C: {
+          type: Boolean,
+          default: true
+        },
+        R: {
+          type: Boolean,
+          default: true
+        },
+        U: {
+          type: Boolean,
+          default: true
+        },
+        D: {
+          type: Boolean,
+          default: true
+        }
       },
       news: {
-        C: Boolean,
-        R: Boolean,
-        U: Boolean,
-        D: Boolean
+        C: {
+          type: Boolean,
+          default: true
+        },
+        R: {
+          type: Boolean,
+          default: true
+        },
+        U: {
+          type: Boolean,
+          default: true
+        },
+        D: {
+          type: Boolean,
+          default: true
+        }
       },
       setting: {
-        C: Boolean,
-        R: Boolean,
-        U: Boolean,
-        D: Boolean
+        C: {
+          type: Boolean,
+          default: true
+        },
+        R: {
+          type: Boolean,
+          default: true
+        },
+        U: {
+          type: Boolean,
+          default: true
+        },
+        D: {
+          type: Boolean,
+          default: true
+        }
       }
     },
     permissionId: {

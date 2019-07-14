@@ -1,4 +1,5 @@
 const New = require("../db/models/new");
+const User = require("../db/models/user");
 const uuidv4 = require("uuid/v4");
 
 exports.getNews = () =>
@@ -18,18 +19,42 @@ exports.getNews = () =>
 exports.newNews = data =>
   new Promise(async (resolve, reject) => {
     try {
-      let id = uuidv4();
-      let date = `${new Date()}`;
+      const { text, theme, date, userId } = data;
+      let newsId = uuidv4();
+
+      const user = await User.findOne({ id: userId });
+      const {
+        access_token,
+        firstName,
+        image,
+        middleName,
+        password,
+        surName,
+        username
+      } = user;
 
       const newNews = new New({
-        ...data,
-        id,
+        user: {
+          access_token,
+          firstName,
+          id: userId,
+          image,
+          middleName,
+          surName,
+          password,
+          username
+        },
+        id: newsId,
+        text,
+        theme,
         date
       });
 
-      const result = await newNews.save();
+      await newNews.save();
 
-      resolve(result);
+      const updatedNews = await New.find();
+
+      resolve(updatedNews);
     } catch (err) {
       reject({
         message: err,
@@ -56,9 +81,11 @@ exports.updateNews = data =>
         }
       );
 
-      const result = await newsPost.save();
+      await newsPost.save();
 
-      resolve(result);
+      const updatedNews = await New.find();
+
+      resolve(updatedNews);
     } catch (err) {
       reject({
         message: err,

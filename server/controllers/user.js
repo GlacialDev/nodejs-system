@@ -55,6 +55,8 @@ const updateUserSchema = Joi.object().keys({
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/)
 });
 
+const createToken = require("./util/createToken");
+
 exports.getUsers = () =>
   new Promise(async (resolve, reject) => {
     try {
@@ -82,10 +84,9 @@ exports.saveNewUser = user =>
 
       user.image = user.img;
       delete user.img;
-      let access_token = uuidv4();
       let id = uuidv4();
+      let access_token = createToken(id);
       let permissionId = uuidv4();
-      console.log(user);
 
       const newUser = new User({
         ...user,

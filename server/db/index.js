@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const config = require("./config.json");
 
 mongoose.Promise = global.Promise;
 
-const connectionURL = `mongodb://${config.db.user}@${config.db.host}:${
-  config.db.port
-}/${config.db.name}`;
+const connectionURL = `mongodb://${process.env.DB_USER}@${
+  process.env.DB_HOST
+}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
 mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", false);
 

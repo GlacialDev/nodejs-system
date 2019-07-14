@@ -3,11 +3,12 @@ const User = require("../db/models/user");
 exports.update = data =>
   new Promise(async (resolve, reject) => {
     try {
-      const { id, permission } = data;
+      console.log(data.data);
+      const { permissionId, permission } = data.data;
       const user = await User.findOneAndUpdate(
-        { permissionId: id },
+        { permissionId },
         {
-          permission: permission
+          permission
         }
       );
 

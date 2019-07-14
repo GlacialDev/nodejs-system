@@ -5,7 +5,7 @@ module.exports = function(router) {
   router.post("/login", async (req, res) => {
     try {
       let data = JSON.parse(req.body);
-      const result = await loginCtrl.login(data);
+      const result = await loginCtrl.login(data, res);
       res.json(result);
     } catch (err) {
       errorHandler(err, res);
@@ -14,6 +14,7 @@ module.exports = function(router) {
 
   router.post("/authFromToken", async (req, res) => {
     try {
+      let data = JSON.parse(req.body);
       const result = await loginCtrl.authFromToken(data);
       res.json(result);
     } catch (err) {
